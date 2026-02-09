@@ -15,6 +15,7 @@
         public Matrix(int nbRows = 0, int nbColumns = 0, float defaultValue = 0)
         {
             // TODO : implémenter
+            
         }
 
         // Propriété : valeur par défaut utilisée pour remplir les nouvelles cases
@@ -54,7 +55,23 @@
          */
         public void AddRow(int i)
         {
-            // TODO : implémenter
+            if (i < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(i), "Indice hors limites");
+            }
+            List<float> Defaut = new List<float>();
+            for(int x = 0; x < this.nbColumns; x++)
+            {
+                Defaut[x] = defaultValue;
+            }
+            if (i == nbRows)
+            {
+                this.matrice.Add(Defaut);
+            }
+            else
+            {
+                this.matrice.Insert(i, Defaut);
+            }
         }
 
         /* Insère une colonne à l'indice `j`. Décale les colonnes suivantes vers la droite.
