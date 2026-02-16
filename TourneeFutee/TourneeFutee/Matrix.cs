@@ -144,15 +144,32 @@
         // Lève une ArgumentOutOfRangeException si `i` ou `j` est en dehors des indices valides
         public float GetValue(int i, int j)
         {
+            if (i < 0 || i >= this.nbRows)
+            {
+                throw new ArgumentOutOfRangeException(nameof(i));
+            }
+            if (j < 0 || j >= this.nbColumns)
+            {
+                throw new ArgumentOutOfRangeException(nameof(j));
+            }
             // TODO : implémenter
-            return 0.0f;
+            return matrice[i][j];
         }
 
         // Affecte la valeur à la ligne `i` et colonne `j` à `v`
         // Lève une ArgumentOutOfRangeException si `i` ou `j` est en dehors des indices valides
         public void SetValue(int i, int j, float v)
         {
+            if (i < 0 || i >= this.nbRows)
+            {
+                throw new ArgumentOutOfRangeException(nameof(i));
+            }
+            if (j < 0 || j >= this.nbColumns)
+            {
+                throw new ArgumentOutOfRangeException(nameof(j));
+            }
             // TODO : implémenter
+            matrice[i][j] = v;
         }
 
         // Affiche la matrice
