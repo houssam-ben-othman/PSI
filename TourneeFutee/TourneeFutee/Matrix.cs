@@ -111,14 +111,33 @@
         // Lève une ArgumentOutOfRangeException si `i` est en dehors des indices valides
         public void RemoveRow(int i)
         {
-            // TODO : implémenter
+            if (i < 0||i>=this.nbRows)
+            {
+                throw new ArgumentOutOfRangeException(nameof(i), "Indice hors limites");
+            }
+            else
+            {
+                this.matrice.RemoveAt(i);
+                this.nbRows--;
+            }
         }
 
         // Supprime la colonne à l'indice `j`. Décale les colonnes suivantes vers la gauche.
         // Lève une ArgumentOutOfRangeException si `j` est en dehors des indices valides
         public void RemoveColumn(int j)
         {
-            // TODO : implémenter
+            if (j < 0||j>=this.nbColumns)
+            {
+                throw new ArgumentOutOfRangeException(nameof(j), "Indice hors limites");
+            }
+            else
+            {
+                for (int i = 0; i < this.nbRows; i++)
+                {
+                    this.matrice[i].RemoveAt(j);
+                }
+                this.nbColumns--;
+            }
         }
 
         // Renvoie la valeur à la ligne `i` et colonne `j`
