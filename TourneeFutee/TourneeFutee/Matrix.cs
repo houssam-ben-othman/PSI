@@ -38,7 +38,7 @@
                     matrice.Add(row);
                 }
             }
-            
+         
         }
 
         // Propriété : valeur par défaut utilisée pour remplir les nouvelles cases
