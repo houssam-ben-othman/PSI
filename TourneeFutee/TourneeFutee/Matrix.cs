@@ -76,37 +76,37 @@
          * Si `i` = NbRows, insère une ligne en fin de matrice
          * Lève une ArgumentOutOfRangeException si `i` est en dehors des indices valides
          */
-        public void AddRow(int i)
+        public void AddRow(int i)//--> Pire cas : O(n+m) || Meilleur Cas : O(n)
         {
-            if (i < 0 || i > nbRows)
+            if (i < 0 || i > nbRows)//--> O(1)
             {
-                throw new ArgumentOutOfRangeException(nameof(i), "Indice hors limites");
+                throw new ArgumentOutOfRangeException(nameof(i), "Indice hors limites");//--> O(1)
             }
-            List<float> Defaut = new List<float>();
-            for (int x = 0; x < this.nbColumns; x++)
+            List<float> Defaut = new List<float>(); //--> O(1) 
+            for (int x = 0; x < this.nbColumns; x++) //--> O(n) 
             {
-                Defaut.Add(defaultValue);
+                Defaut.Add(defaultValue);//--> O(1)
             }
-            matrice.Insert(i, Defaut);
-            nbRows++;
-        }
+            matrice.Insert(i, Defaut); //--> Pire Cas (Insertion debut/millieu) O(m) || Meilleur Cas (Insertion fin) : O(1)
+            nbRows++; //--> O(1)
+            }
 
         /* Insère une colonne à l'indice `j`. Décale les colonnes suivantes vers la droite.
          * Toutes les cases de la nouvelle ligne contiennent DefaultValue.
          * Si `j` = NbColums, insère une colonne en fin de matrice
          * Lève une ArgumentOutOfRangeException si `j` est en dehors des indices valides
          */
-        public void AddColumn(int j)
+        public void AddColumn(int j)//--> Pire Cas : O(n*m) || Meilleur Cas : O(n)
         {
-            if (j < 0 || j > nbColumns)
+            if (j < 0 || j > nbColumns)//--> O(1)
             {
-                throw new ArgumentOutOfRangeException(nameof(j), "Indice hors limites");
+                throw new ArgumentOutOfRangeException(nameof(j), "Indice hors limites"); //--> O(1)
             }
-            foreach (var row in matrice)
+            foreach (var row in matrice)//O(m)
             {
-                row.Insert(j, defaultValue);
+                row.Insert(j, defaultValue); //--> Pire Cas (Insertion début/millieu) : O(n) || Meilleur Cas (Insertion fin) : O(1)
             }
-            nbColumns++;
+            nbColumns++;//--> O(1)
         }
 
         // Supprime la ligne à l'indice `i`. Décale les lignes suivantes vers le haut.
