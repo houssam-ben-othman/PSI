@@ -33,7 +33,7 @@
         // Lecture seule
         public int Order
         {
-            get;    // TODO : implémenter
+            get { return this.order; }    // TODO : implémenter
                     // pas de set
         }
 
@@ -41,27 +41,28 @@
         // Lecture seule
         public bool Directed
         {
-            get;    // TODO : implémenter
+            get{return this.directed; }   // TODO : implémenter
                     // pas de set
         }
         public float NoEdgeValue
         {
-            get;
-            set;// Pourrai etre supprimer si pas utile
+            get{return this.noEdgeValue; }
+            set{this.noEdgeValue = value; }// Pourrais être supprimé si pas utile
         }
         public Matrix Adajcence
-        {   get;   
-            set;      
+        {
+            get { return this.adjacence; }
+            set { this.adjacence = value; }     
         }   
         public Dictionary<string, int> VertexIndices
         {
-            get;
-            set;// Pourrai etre supprimer si pas utile
+            get { return this.vertexIndices; }
+            set{this.vertexIndices = value; }// Pourrais être supprimé si pas utile
         }
         public Dictionary<string, float> VertexValues
         {
-            get;
-            set;// Pourrai etre supprimer si pas utile
+            get { return this.vertexValues; }
+            set { this.vertexValues = value; }// Pourrais être supprimé si pas utile
         }
 
 
