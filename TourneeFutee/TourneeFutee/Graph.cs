@@ -7,7 +7,7 @@
         private bool directed; // graphe orienté ou non
         private int order; // nombre de sommets du graphe (obligatoirement un entier)
         private float noEdgeValue; // poids de l'arc
-        private Matrix adjascence; // matrice d'adjacence du graphe
+        private Matrix adjacence; // matrice d'adjacence du graphe
         private Dictionary<string, int> vertexIndices; // dictionnaire associant à chaque nom de sommet son indice dans la matrice d'adjacence
         private Dictionary<string, float> vertexValues; // dictionnaire associant à chaque nom de sommet sa valeur
 
@@ -21,7 +21,7 @@
             this.directed = directed;
             this.noEdgeValue = noEdgeValue;
             this.order = 0;
-            this.adjascence = new Matrix(0, 0, noEdgeValue);
+            this.adjacence = new Matrix(0, 0, noEdgeValue);
             this.vertexIndices = new Dictionary<string, int>();
             this.vertexValues = new Dictionary<string, float>();
         }
@@ -49,7 +49,7 @@
             get;
             set;// Pourrai etre supprimer si pas utile
         }
-        public Matrix Adjascence
+        public Matrix Adajcence
         {   get;   
             set;      
         }   
