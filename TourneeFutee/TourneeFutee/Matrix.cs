@@ -3,10 +3,10 @@
     public class Matrix
     {
         // TODO : ajouter tous les attributs que vous jugerez pertinents 
-        private int nbRows;
-        private int nbColumns;
-        private float defaultValue;
-        private List<List<float>> matrice;
+        private int nbRows; // nombre de lignes de la matrice
+        private int nbColumns; // nombre de colonnes de la matrice
+        private float defaultValue;// valeur par défaut utilisée pour remplir les nouvelles cases
+        private List<List<float>> matrice;// matrice de float
 
         /* Crée une matrice de dimensions `nbRows` x `nbColums`.
          * Toutes les cases de cette matrice sont remplies avec `defaultValue`.
@@ -111,34 +111,34 @@
 
         // Supprime la ligne à l'indice `i`. Décale les lignes suivantes vers le haut.
         // Lève une ArgumentOutOfRangeException si `i` est en dehors des indices valides
-        public void RemoveRow(int i)
+        public void RemoveRow(int i) 
         {
-            if (i < 0||i>=this.nbRows)
+            if (i < 0||i>=this.nbRows) 
             {
-                throw new ArgumentOutOfRangeException(nameof(i), "Indice hors limites");
+                throw new ArgumentOutOfRangeException(nameof(i), "Indice hors limites"); 
             }
-            else
+            else 
             {
-                this.matrice.RemoveAt(i);
-                this.nbRows--;
+                this.matrice.RemoveAt(i); 
+                this.nbRows--; 
             }
         }
 
         // Supprime la colonne à l'indice `j`. Décale les colonnes suivantes vers la gauche.
         // Lève une ArgumentOutOfRangeException si `j` est en dehors des indices valides
-        public void RemoveColumn(int j)
+        public void RemoveColumn(int j) 
         {
-            if (j < 0||j>=this.nbColumns)
+            if (j < 0||j>=this.nbColumns) 
             {
-                throw new ArgumentOutOfRangeException(nameof(j), "Indice hors limites");
+                throw new ArgumentOutOfRangeException(nameof(j), "Indice hors limites"); 
             }
-            else
+            else 
             {
-                for (int i = 0; i < this.nbRows; i++)
+                for (int i = 0; i < this.nbRows; i++)  
                 {
-                    this.matrice[i].RemoveAt(j);
+                    this.matrice[i].RemoveAt(j); 
                 }
-                this.nbColumns--;
+                this.nbColumns--; 
             }
         }
 

@@ -4,6 +4,12 @@
     {
 
         // TODO : ajouter tous les attributs que vous jugerez pertinents 
+        private bool directed; // graphe orienté ou non
+        private int order; // nombre de sommets du graphe (obligatoirement un entier)
+        private float noEdgeValue; // poids de l'arc
+        private Matrix adjascence; // matrice d'adjacence du graphe
+        private Dictionary<string, int> vertexIndices; // dictionnaire associant à chaque nom de sommet son indice dans la matrice d'adjacence
+        private Dictionary<string, float> vertexValues; // dictionnaire associant à chaque nom de sommet sa valeur
 
 
         // --- Construction du graphe ---
@@ -12,7 +18,12 @@
         // La valeur `noEdgeValue` est le poids modélisant l'absence d'un arc (0 par défaut)
         public Graph(bool directed, float noEdgeValue = 0)
         {
-            // TODO : implémenter
+            this.directed = directed;
+            this.noEdgeValue = noEdgeValue;
+            this.order = 0;
+            this.adjascence = new Matrix(0, 0, noEdgeValue);
+            this.vertexIndices = new Dictionary<string, int>();
+            this.vertexValues = new Dictionary<string, float>();
         }
 
 
@@ -32,6 +43,25 @@
         {
             get;    // TODO : implémenter
                     // pas de set
+        }
+        public float NoEdgeValue
+        {
+            get;
+            set;// Pourrai etre supprimer si pas utile
+        }
+        public Matrix Adjascence
+        {   get;   
+            set;      
+        }   
+        public Dictionary<string, int> VertexIndices
+        {
+            get;
+            set;// Pourrai etre supprimer si pas utile
+        }
+        public Dictionary<string, float> VertexValues
+        {
+            get;
+            set;// Pourrai etre supprimer si pas utile
         }
 
 
