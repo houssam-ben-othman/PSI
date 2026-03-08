@@ -72,7 +72,14 @@
         // Lève une ArgumentException s'il existe déjà un sommet avec le même nom dans le graphe
         public void AddVertex(string name, float value = 0)
         {
-            // TODO : implémenter
+            if (vertexIndices.ContainsKey(name))
+                throw new ArgumentException("A vertex with the same name already exists.", nameof(name));
+            int newIndex = order;
+            adjacence.AddRow(newIndex);
+            adjacence.AddColumn(newIndex);
+            vertexIndices[name] = newIndex;
+            vertexValues[name] = value;
+            order++;
         }
 
 
@@ -81,6 +88,13 @@
         public void RemoveVertex(string name)
         {
             // TODO : implémenter
+            if (!vertexIndices.TryGetValue(name, out int index))
+                throw new ArgumentException("Sommet non trouvé", nameof(name));
+            adjacence.RemoveRow(index);  
+            adjacence.RemoveColumn(index); 
+            vertexIndices.Remove(name);
+            vertexValues.Remove(name);
+            order--;
         }
 
         // Renvoie la valeur du sommet de nom `name`
@@ -88,7 +102,9 @@
         public float GetVertexValue(string name)
         {
             // TODO : implémenter
-            return 0.0f;
+            if (!vertexValues.TryGetValue(name, out float value))
+                throw new ArgumentException("Sommet non trouvé", nameof(name));
+            return value;
         }
 
         // Affecte la valeur du sommet de nom `name` à `value`
@@ -96,6 +112,9 @@
         public void SetVertexValue(string name, float value)
         {
             // TODO : implémenter
+            if (!vertexValues.TryGetValue(name, out _))
+                throw new ArgumentException("Sommet non trouvé", nameof(name));
+            vertexValues[name] = value;
         }
 
 
