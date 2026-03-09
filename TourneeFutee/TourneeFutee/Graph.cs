@@ -155,6 +155,14 @@
         public void AddEdge(string sourceName, string destinationName, float weight = 1)
         {
             // TODO : implémenter
+            if (!vertexIndices.TryGetValue(sourceName, out int sourceIndex) ||
+                !vertexIndices.TryGetValue(destinationName, out int destIndex))
+                throw new ArgumentException("Sommet(s) non trouvé(s)");
+            if (adjacence.GetValue(sourceIndex, destIndex) != noEdgeValue)
+                throw new ArgumentException("Arc déjà existant");
+            adjacence.SetValue(sourceIndex, destIndex, weight);
+            if (directed==false)
+                adjacence.SetValue(destIndex, sourceIndex, weight);
         }
 
         /* Supprime l'arc allant du sommet nommé `sourceName` au sommet nommé `destinationName` du graphe
