@@ -73,13 +73,15 @@
         public void AddVertex(string name, float value = 0)
         {
             if (vertexIndices.ContainsKey(name))
-                throw new ArgumentException("A vertex with the same name already exists.", nameof(name));
+            { 
+                throw new ArgumentException("A vertex with the same name already exists.", nameof(name)); 
+            }
             int newIndex = order;
             adjacence.AddRow(newIndex);
             adjacence.AddColumn(newIndex);
             vertexIndices[name] = newIndex;
             vertexValues[name] = value;
-            order++;
+            order=order +1;
         }
 
 
