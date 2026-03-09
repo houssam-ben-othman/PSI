@@ -72,7 +72,14 @@
         // Lève une ArgumentException s'il existe déjà un sommet avec le même nom dans le graphe
         public void AddVertex(string name, float value = 0)
         {
-            // TODO : implémenter
+            if (vertexIndices.ContainsKey(name))
+                throw new ArgumentException("A vertex with the same name already exists.", nameof(name));
+            int newIndex = order;
+            adjacence.AddRow(newIndex);
+            adjacence.AddColumn(newIndex);
+            vertexIndices[name] = newIndex;
+            vertexValues[name] = value;
+            order++;
         }
 
 
@@ -81,6 +88,13 @@
         public void RemoveVertex(string name)
         {
             // TODO : implémenter
+            if (!vertexIndices.TryGetValue(name, out int index))
+                throw new ArgumentException("Sommet non trouvé", nameof(name));
+            adjacence.RemoveRow(index);  
+            adjacence.RemoveColumn(index); 
+            vertexIndices.Remove(name);
+            vertexValues.Remove(name);
+            order--;
         }
 
         // Renvoie la valeur du sommet de nom `name`
@@ -109,31 +123,25 @@
         // Renvoie la liste des noms des voisins du sommet de nom `vertexName`
         // (si ce sommet n'a pas de voisins, la liste sera vide)
         // Lève une ArgumentException si le sommet n'a pas été trouvé dans le graphe
-        public List<string> GetNeighbors(string vertexName) //O(k*this.order*this.vertexindices.Count) = O(n^3)
+        public List<string> GetNeighbors(string vertexName)
         {
-            if (this.vertexIndices.ContainsKey(vertexName)==false) // O(1)
+            List<string> neighborNames = new List<string>();
+
+            // TODO : implémenter
+            if (!vertexIndices.TryGetValue(vertexName, out int vertexIndex))
+                throw new ArgumentException("Sommet non trouvé", nameof(vertexName));
+            for (int j = 0; j < order; j++)
             {
-                throw new ArgumentException("Le sommet n'existe pas dans le graphe."); // O(1)
-            }
-            List<string> neighborNames = new List<string>(); // O(1)
-            int indiceligne = this.vertexIndices[vertexName]; // O(1)
-            for (int j = 0; j < this.order; j++) // O(this.order)
-            {
-                float poidsArc = this.adjacence.GetValue(indiceligne, j); // O(1)
-                if (poidsArc != this.noEdgeValue) // O(1)
+                float weight = adjacence.GetValue(vertexIndex, j);
+
+                if (weight != noEdgeValue)
                 {
-                    for (int k = 0; k < this.vertexIndices.Count; k++) // O(this.vertexindices.Count)
-                    {
-                        KeyValuePair<string, int> paire = this.vertexIndices.ElementAt(k); // O(k)
-                        if (paire.Value == j) // O(1)
-                        {
-                            neighborNames.Add(paire.Key); // O(1)
-                            break;
-                        }
-                    }
+                    string neighborName = vertexIndices.FirstOrDefault(kvp => kvp.Value == j).Key;
+                    if (neighborName != null)
+                        neighborNames.Add(neighborName);
                 }
             }
-            return neighborNames; // O(1)
+            return neighborNames;
         }
 
         // --- Gestion des arcs ---
