@@ -3,7 +3,7 @@
     public class Graph
     {
 
-        // TODO : ajouter tous les attributs que vous jugerez pertinents 
+
         private bool directed; // graphe orienté ou non
         private int order; // nombre de sommets du graphe (obligatoirement un entier)
         private float noEdgeValue; // poids de l'arc
@@ -33,7 +33,7 @@
         // Lecture seule
         public int Order
         {
-            get { return this.order; }    // TODO : implémenter
+            get { return this.order; }    
                     // pas de set
         }
 
@@ -41,13 +41,13 @@
         // Lecture seule
         public bool Directed
         {
-            get{return this.directed; }   // TODO : implémenter
+            get{return this.directed; }   
                     // pas de set
         }
         public float NoEdgeValue
         {
             get{return this.noEdgeValue; }
-            set{this.noEdgeValue = value; }// Pourrais être supprimé si pas utile
+            set{this.noEdgeValue = value; }// Rmq : Pourrais être supprimé si pas utile
         }
         public Matrix Adajcence
         {
@@ -57,12 +57,12 @@
         public Dictionary<string, int> VertexIndices
         {
             get { return this.vertexIndices; }
-            set{this.vertexIndices = value; }// Pourrais être supprimé si pas utile
+            set{this.vertexIndices = value; }// Rmq : Pourrais être supprimé si pas utile
         }
         public Dictionary<string, float> VertexValues
         {
             get { return this.vertexValues; }
-            set { this.vertexValues = value; }// Pourrais être supprimé si pas utile
+            set { this.vertexValues = value; }// Rmq : Pourrais être supprimé si pas utile
         }
 
 
@@ -85,30 +85,55 @@
 
         // Renvoie la valeur du sommet de nom `name`
         // Lève une ArgumentException si le sommet n'a pas été trouvé dans le graphe
-        public float GetVertexValue(string name)
+        public float GetVertexValue(string nomsommet) // O(1)
         {
-            // TODO : implémenter
-            return 0.0f;
+            if (this.vertexValues.ContainsKey(nomsommet)==false) // O(1)
+            {
+                throw new ArgumentException("Le sommet n'existe pas dans le graphe."); // O(1)
+            }
+            return this.vertexValues[nomsommet];// O(1)
         }
 
         // Affecte la valeur du sommet de nom `name` à `value`
         // Lève une ArgumentException si le sommet n'a pas été trouvé dans le graphe
-        public void SetVertexValue(string name, float value)
+        public void SetVertexValue(string nomsommet, float valeur) // O(1)
         {
-            // TODO : implémenter
+            if (this.vertexValues.ContainsKey(nomsommet)==false) // O(1)
+            {
+                throw new ArgumentException("Le sommet n'existe pas dans le graphe."); // O(1)
+            }
+            this.vertexValues[nomsommet] = valeur; // O(1)
         }
 
 
         // Renvoie la liste des noms des voisins du sommet de nom `vertexName`
         // (si ce sommet n'a pas de voisins, la liste sera vide)
         // Lève une ArgumentException si le sommet n'a pas été trouvé dans le graphe
-        public List<string> GetNeighbors(string vertexName)
+        public List<string> GetNeighbors(string vertexName) //O(k*this.order*this.vertexindices.Count) = O(n^3)
         {
-            List<string> neighborNames = new List<string>();
-
-            // TODO : implémenter
-
-            return neighborNames;
+            if (this.vertexIndices.ContainsKey(vertexName)==false) // O(1)
+            {
+                throw new ArgumentException("Le sommet n'existe pas dans le graphe."); // O(1)
+            }
+            List<string> neighborNames = new List<string>(); // O(1)
+            int indiceligne = this.vertexIndices[vertexName]; // O(1)
+            for (int j = 0; j < this.order; j++) // O(this.order)
+            {
+                float poidsArc = this.adjacence.GetValue(indiceligne, j); // O(1)
+                if (poidsArc != this.noEdgeValue) // O(1)
+                {
+                    for (int k = 0; k < this.vertexIndices.Count; k++) // O(this.vertexindices.Count)
+                    {
+                        KeyValuePair<string, int> paire = this.vertexIndices.ElementAt(k); // O(k)
+                        if (paire.Value == j) // O(1)
+                        {
+                            neighborNames.Add(paire.Key); // O(1)
+                            break;
+                        }
+                    }
+                }
+            }
+            return neighborNames; // O(1)
         }
 
         // --- Gestion des arcs ---
