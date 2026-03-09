@@ -176,8 +176,20 @@
          */
         public float GetEdgeWeight(string sourceName, string destinationName)
         {
-            // TODO : implémenter
-            return 0.0f;
+            if (this.vertexIndices.TryGetValue(sourceName, out int sourceIndex)==false)
+            {
+                throw new ArgumentException("Le sommet source n'existe pas.", nameof(sourceName));
+            }
+            if (this.vertexIndices.TryGetValue(destinationName, out int destIndex)==false)
+            {
+                throw new ArgumentException("Le sommet destination n'existe pas.", nameof(destinationName));
+            }
+            float weight = this.adjacence.GetValue(sourceIndex, destIndex);
+            if (weight == this.noEdgeValue)
+            {
+                throw new ArgumentException("L'arc n'existe pas entre ces deux sommets.");
+            }
+            return weight;
         }
 
         /* Affecte le poids l'arc allant du sommet nommé `sourceName` au sommet nommé `destinationName` à `weight` 
@@ -186,11 +198,21 @@
          */
         public void SetEdgeWeight(string sourceName, string destinationName, float weight)
         {
-            // TODO : implémenter
+            if (this.vertexIndices.TryGetValue(sourceName, out int sourceIndex)==false)
+            {
+                throw new ArgumentException("Le sommet source n'existe pas.", nameof(sourceName));
+            }
+            if (this.vertexIndices.TryGetValue(destinationName, out int destIndex)==false)
+            {
+                throw new ArgumentException("Le sommet destination n'existe pas.", nameof(destinationName));
+            }
+            this.adjacence.SetValue(sourceIndex, destIndex, weight);
+            if (this.directed==false)
+            {
+                this.adjacence.SetValue(destIndex, sourceIndex, weight);
+            }
         }
-
         // TODO : ajouter toutes les méthodes que vous jugerez pertinentes 
-
     }
 
 
