@@ -152,7 +152,25 @@
          */
         public void AddEdge(string sourceName, string destinationName, float weight = 1)
         {
-            // TODO : implémenter
+            try
+            {
+                int i = vertexIndices[sourceName];
+                int j = vertexIndices[destinationName];
+                if(adjacence.GetValue(i, j)!=noEdgeValue)
+                {
+                    throw new ArgumentException("Cet arc existe déja");
+                }
+                adjacence.SetValue(i, j, weight);
+
+                if (!directed)
+                {
+                    adjacence.SetValue(j, i, weight);
+                }
+            }
+            catch (KeyNotFoundException)
+            {
+                throw new ArgumentException("Sommet non trouvé");
+            }
         }
 
         /* Supprime l'arc allant du sommet nommé `sourceName` au sommet nommé `destinationName` du graphe
@@ -163,7 +181,24 @@
          */
         public void RemoveEdge(string sourceName, string destinationName)
         {
-            // TODO : implémenter
+            try
+            {
+                int i = vertexIndices[sourceName];
+                int j = vertexIndices[destinationName];
+                if(adjacence.GetValue(i,j)==noEdgeValue)
+                {
+                    throw new ArgumentException("l'arc n'existe pas");
+                }
+                adjacence.SetValue(i, j, noEdgeValue);
+                if(!directed)
+                {
+                    adjacence.SetValue(j,i, noEdgeValue);
+                }
+            }
+            catch (KeyNotFoundException) 
+            {
+                throw new ArgumentException("Sommet non trouvé");
+            }
         }
 
         /* Renvoie le poids de l'arc allant du sommet nommé `sourceName` au sommet nommé `destinationName`
