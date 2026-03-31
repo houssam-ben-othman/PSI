@@ -88,8 +88,52 @@
         // où `i`, `j`, et `value` contiennent respectivement la ligne, la colonne et la valeur du regret maximale
         public static (int i, int j, float value) GetMaxRegret(Matrix m)
         {
-            // TODO : implémenter
-            return (0, 0, 0.0f);
+            float maxvalue = -1;
+            int indicei = -1;
+            int indicej = -1;
+
+            for (int i = 0; i < m.NbRows; i++)
+            {
+                for (int j = 0; j < m.NbColumns; j++)
+                {
+                    if (m.GetValue(i, j) == 0)
+                    {
+                        float minRow = float.MaxValue;
+                        for (int col = 0; col < m.NbColumns; col++)
+                        {
+                            if (col != j) // On ignore la colonne du zéro
+                            {
+                                float val = m.GetValue(i, col);
+                                if (val < minRow)
+                                {
+                                    minRow = val;
+                                }
+                            }
+                        }
+
+                        float minCol = float.MaxValue;
+                        for (int row = 0; row < m.NbRows; row++)
+                        {
+                            if (row != i) // On ignore la ligne du zéro
+                            {
+                                float val = m.GetValue(row, j);
+                                if (val < minCol)
+                                {
+                                    minCol = val;
+                                }
+                            }
+                        }
+                        float regret = minRow + minCol;
+                        if (regret > maxvalue)
+                        {
+                            maxvalue = regret;
+                            indicei = i;
+                            indicej = j;
+                        }
+                    }
+                }
+            }
+            return (indicei, indicej, maxvalue);
 
         }
 
@@ -104,6 +148,7 @@
         }
 
         // TODO : ajouter toutes les méthodes que vous jugerez pertinentes 
+        
 
     }
 }
