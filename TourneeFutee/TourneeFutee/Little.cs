@@ -12,7 +12,26 @@
         // Instancie le planificateur en spécifiant le graphe modélisant un problème de voyageur de commerce
         public Little(Graph graph)
         {
-            // TODO : implémenter
+
+            this.graph = graph;
+            this.bestTour = new Tour();
+            this.NbCities = graph.Order;
+            this.costMatrix = new Matrix(graph.Order, graph.Order, float.PositiveInfinity);
+            for (int i = 0; i < graph.Order; i++)
+            {
+                for (int j = 0; j < graph.Order; j++)
+                {
+                    float val = graph.Adajcence.GetValue(i, j);
+                    if (val == graph.NoEdgeValue || i == j)
+                    {
+                        this.costMatrix.SetValue(i, j, float.PositiveInfinity);
+                    }
+                    else
+                    {
+                        this.costMatrix.SetValue(i, j, val);
+                    }
+                }
+            }
         }
 
         // Trouve la tournée optimale dans le graphe `this.graph`

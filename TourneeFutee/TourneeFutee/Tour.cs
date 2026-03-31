@@ -11,7 +11,7 @@ namespace TourneeFutee
 
         public Tour()
         {
-            cost = 0;
+            cost = float.PositiveInfinity;
             segments = new List<(string source, string destination)>();
         }
         // propriétés
