@@ -19,7 +19,9 @@ namespace TourneeFutee
         // Coût total de la tournée
         public float Cost
         {
-            get { return this.cost; }    // TODO : implémenter
+            get { return this.cost; }
+            set { this.cost = value; }
+            // TODO : implémenter
         }
 
         // Nombre de trajets dans la tournée
@@ -40,6 +42,10 @@ namespace TourneeFutee
         public void Print()
         {
             Console.WriteLine(ToString());// TODO : implémenter 
+        }
+        public void AddSegment(string source, string destination)
+        {
+            segments.Add((source, destination));
         }
 
         // TODO : ajouter toutes les méthodes que vous jugerez pertinentes 
