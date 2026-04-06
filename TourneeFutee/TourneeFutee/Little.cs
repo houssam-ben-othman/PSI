@@ -5,8 +5,8 @@
     public class Little
     {
         private Graph graph; // graphe modélisant le problème de voyageur de commerce à résoudre
-        private Tour bestTour; // meilleure tournée trouvée jusqu'à présent
-        private Matrix costMatrix; // matrice de coûts utilisée pour les calculs intermédiaires
+        private Tour MeilleurTour; // meilleure tournée trouvée jusqu'à présent
+        private Matrix MatriceCout; // matrice de coûts utilisée pour les calculs intermédiaires
         public int NbCities; // nombre de villes du problème
 
         // Instancie le planificateur en spécifiant le graphe modélisant un problème de voyageur de commerce
@@ -14,9 +14,9 @@
         {
 
             this.graph = graph;
-            this.bestTour = new Tour();
+            this.MeilleurTour = new Tour();
             this.NbCities = graph.Order;
-            this.costMatrix = new Matrix(graph.Order, graph.Order, float.PositiveInfinity);
+            this.MatriceCout = new Matrix(graph.Order, graph.Order, float.PositiveInfinity);
             for (int i = 0; i < graph.Order; i++)
             {
                 for (int j = 0; j < graph.Order; j++)
@@ -24,11 +24,11 @@
                     float val = graph.Adajcence.GetValue(i, j);
                     if (val == graph.NoEdgeValue || i == j)
                     {
-                        this.costMatrix.SetValue(i, j, float.PositiveInfinity);
+                        this.MatriceCout.SetValue(i, j, float.PositiveInfinity);
                     }
                     else
                     {
-                        this.costMatrix.SetValue(i, j, val);
+                        this.MatriceCout.SetValue(i, j, val);
                     }
                 }
             }
@@ -38,17 +38,17 @@
         // (c'est à dire le cycle hamiltonien de plus faible coût)
         public Tour ComputeOptimalTour()
         {
-            Matrix rootMatrix = new Matrix(NbCities, NbCities, float.PositiveInfinity);
+            Matrix Matrix = new Matrix(NbCities, NbCities, float.PositiveInfinity);
             for (int i = 0; i < NbCities; i++)
             {
                 for (int j = 0; j < NbCities; j++)
                 {
-                    rootMatrix.SetValue(i, j, costMatrix.GetValue(i, j));
+                    Matrix.SetValue(i, j, MatriceCout.GetValue(i, j));
                 }
             }
-            float rootBound = ReduceMatrix(rootMatrix);
-            Branch(rootMatrix, rootBound, new List<(string, string)>());
-            return bestTour;
+            float Bound = ReduceMatrix(Matrix);
+            Branch(Matrix, Bound, new List<(string, string)>());
+            return MeilleurTour;
         }
         private Matrix CopieMatrice(Matrix m)
         {
@@ -65,7 +65,7 @@
 
         private string IndexToName(int index)
         {
-            foreach (var nom in graph.VertexIndices)
+            foreach (KeyValuePair<string, int> nom in graph.VertexIndices)
             {
                 if (nom.Value == index)
                 {
@@ -77,119 +77,145 @@
 
         private void Branch(Matrix currentMatrix, float lowerBound, List<(string, string)> includedSegments)
         {
-            if (lowerBound >= bestTour.Cost)
+            if (lowerBound >= MeilleurTour.Cost)
+            {
                 return;
-
+            }
             if (includedSegments.Count == NbCities)
             {
-                // Tous les trajets sont inclus, on a une tournée complète
-                if (lowerBound < bestTour.Cost)
+                if (lowerBound < MeilleurTour.Cost)
                 {
-                    bestTour = new Tour();
-                    bestTour.Cost = lowerBound;
+                    MeilleurTour = new Tour();
+                    MeilleurTour.Cost = lowerBound;
                     foreach (var seg in includedSegments)
-                        bestTour.AddSegment(seg.Item1, seg.Item2);
+                    {
+                        MeilleurTour.AddSegment(seg.Item1, seg.Item2);
+                    }
                 }
                 return;
             }
 
             if (includedSegments.Count == NbCities - 1)
             {
-                // Il manque un seul trajet : on le trouve par déduction
-                // Trouver la ville qui n'a pas encore de départ
-                var sources = new HashSet<string>();
-                var destinations = new HashSet<string>();
-                foreach (var seg in includedSegments)
+                List<string> sources = new List<string>();
+                List<string> destinations = new List<string>();
+                foreach ((string,string) seg in includedSegments)
                 {
                     sources.Add(seg.Item1);
                     destinations.Add(seg.Item2);
                 }
 
-                string lastSrc = null;
-                string lastDst = null;
+                string DerSrc = null;
+                string DerDst = null;
 
-                foreach (var kvp in graph.VertexIndices)
+                foreach (KeyValuePair<string,int> ville in graph.VertexIndices)
                 {
-                    if (!sources.Contains(kvp.Key)) lastSrc = kvp.Key;
-                    if (!destinations.Contains(kvp.Key)) lastDst = kvp.Key;
+                    if (!sources.Contains(ville.Key))
+                    {
+                        DerSrc = ville.Key;
+                    }
+                    if (!destinations.Contains(ville.Key))
+                    {
+                        DerDst = ville.Key;
+                    }
                 }
 
-                if (lastSrc != null && lastDst != null)
+                if (DerSrc != null && DerDst != null)
                 {
-                    // Vérifier que ce trajet existe dans le graphe original
-                    if (graph.VertexIndices.TryGetValue(lastSrc, out int si) &&
-                        graph.VertexIndices.TryGetValue(lastDst, out int di))
+                    if (graph.VertexIndices.TryGetValue(DerSrc, out int si) && graph.VertexIndices.TryGetValue(DerDst, out int di))
                     {
-                        float edgeCost = costMatrix.GetValue(si, di);
-                        if (!float.IsPositiveInfinity(edgeCost))
+                        float CoutArete = MatriceCout.GetValue(si, di);
+                        if (CoutArete != float.PositiveInfinity)
                         {
-                            float totalCost = lowerBound + currentMatrix.GetValue(si, di);
-                            // Si currentMatrix est infinie ici, utiliser la borne directement
-                            if (float.IsPositiveInfinity(totalCost))
-                                totalCost = lowerBound;
-
-                            if (totalCost < bestTour.Cost)
+                            float CoutTot = lowerBound + currentMatrix.GetValue(si, di);
+                            if (CoutTot == float.PositiveInfinity)
                             {
-                                bestTour = new Tour();
-                                bestTour.Cost = totalCost;
+                                CoutTot = lowerBound;
+                            }
+                            if (CoutTot < MeilleurTour.Cost)
+                            {
+                                MeilleurTour = new Tour();
+                                MeilleurTour.Cost = CoutTot;
                                 foreach (var seg in includedSegments)
-                                    bestTour.AddSegment(seg.Item1, seg.Item2);
-                                bestTour.AddSegment(lastSrc, lastDst);
+                                {
+                                    MeilleurTour.AddSegment(seg.Item1, seg.Item2);
+                                }
+                                MeilleurTour.AddSegment(DerSrc, DerDst);
                             }
                         }
                     }
                 }
                 return;
             }
+            (int regret_i, int regret_j, float dgaf) = GetMaxRegret(currentMatrix);
+            if (regret_i == -1 || regret_j == -1)
+            {
+                return;
+            }
+            string segSrc = IndexToName(regret_i);
+            string segDst = IndexToName(regret_j);
 
-            var (ri, rj, _) = GetMaxRegret(currentMatrix);
-            if (ri == -1 || rj == -1) return;
-
-            string segSrc = IndexToName(ri);
-            string segDst = IndexToName(rj);
-
-            // ── Branche INCLUSION ──
             Matrix inclMatrix = CopieMatrice(currentMatrix);
-            for (int k = 0; k < NbCities; k++)
-                inclMatrix.SetValue(ri, k, float.PositiveInfinity);
-            for (int k = 0; k < NbCities; k++)
-                inclMatrix.SetValue(k, rj, float.PositiveInfinity);
 
-            var newIncluded = new List<(string, string)>(includedSegments) { (segSrc, segDst) };
+            for (int k = 0; k < NbCities; k++)
+            {
+                inclMatrix.SetValue(regret_i, k, float.PositiveInfinity);
+            }
+            for (int k = 0; k < NbCities; k++)
+            {
+                inclMatrix.SetValue(k, regret_j, float.PositiveInfinity);
+            }
+            List<(string, string)> newIncluded = new List<(string, string)>(includedSegments) { (segSrc, segDst) };
 
             if (newIncluded.Count < NbCities)
             {
-                string chainEnd = segDst;
+                string FinChaine = segDst;
                 bool advanced = true;
                 while (advanced)
                 {
                     advanced = false;
                     foreach (var s in newIncluded)
-                        if (s.Item1 == chainEnd) { chainEnd = s.Item2; advanced = true; break; }
+                    {
+                        if (s.Item1 == FinChaine)
+                        {
+                            FinChaine = s.Item2;
+                            advanced = true;
+                            break;
+                        }
+                    }
                 }
 
-                string chainStart = segSrc;
+                string DebutChaine = segSrc;
                 advanced = true;
                 while (advanced)
                 {
                     advanced = false;
                     foreach (var s in newIncluded)
-                        if (s.Item2 == chainStart) { chainStart = s.Item1; advanced = true; break; }
+                    {
+                        if (s.Item2 == DebutChaine)
+                        {
+                            DebutChaine = s.Item1;
+                            advanced = true; 
+                            break;
+                        }
+                    }
                 }
 
-                if (graph.VertexIndices.TryGetValue(chainEnd, out int forbidI) &&
-                    graph.VertexIndices.TryGetValue(chainStart, out int forbidJ))
+                if (graph.VertexIndices.TryGetValue(FinChaine, out int forbidI) && graph.VertexIndices.TryGetValue(DebutChaine, out int forbidJ))
+                {
                     inclMatrix.SetValue(forbidI, forbidJ, float.PositiveInfinity);
+                }
+
+
+                float inclBound = lowerBound + ReduceMatrix(inclMatrix);
+                Branch(inclMatrix, inclBound, newIncluded);
+
+
+                Matrix exclMatrix = CopieMatrice(currentMatrix);
+                exclMatrix.SetValue(regret_i, regret_j, float.PositiveInfinity);
+                float exclBound = lowerBound + ReduceMatrix(exclMatrix);
+                Branch(exclMatrix, exclBound, includedSegments);
             }
-
-            float inclBound = lowerBound + ReduceMatrix(inclMatrix);
-            Branch(inclMatrix, inclBound, newIncluded);
-
-           
-            Matrix exclMatrix = CopieMatrice(currentMatrix);
-            exclMatrix.SetValue(ri, rj, float.PositiveInfinity);
-            float exclBound = lowerBound + ReduceMatrix(exclMatrix);
-            Branch(exclMatrix, exclBound, includedSegments);
         }
 
         // --- Méthodes utilitaires réalisant des étapes de l'algorithme de Little
