@@ -260,6 +260,10 @@
                 this.adjacence.SetValue(destIndex, sourceIndex, weight);
             }
         }
+        public bool ContainsVertex(string name)
+        {
+            return vertexIndices.ContainsKey(name);
+        }
         // TODO : ajouter toutes les méthodes que vous jugerez pertinentes 
     }
 }
