@@ -42,7 +42,8 @@ namespace TourneeFutee
             // TODO : initialiser et ouvrir la connexion à la base de données
             // Exemple :
             _connectionString = $"server={serverIp};database={dbname};uid={user};pwd={pwd};";
-            MySqlConnection connection = new MySqlConnection(_connectionString);
+            using var connection = new MySqlConnection(_connectionString); 
+            // using var permet de ne pas oublier de fermer la connexion et de ne pas utiliser finally connexion.Close
             try
             {
                 connection.Open();
@@ -51,11 +52,7 @@ namespace TourneeFutee
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-            }
-            finally
-            {
-                connection.Close(); 
-            }       
+            }      
         }
 
         // ─────────────────────────────────────────────────────────────────────
