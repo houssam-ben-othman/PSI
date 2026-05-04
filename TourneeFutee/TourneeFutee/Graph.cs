@@ -70,35 +70,35 @@
 
         // Ajoute le sommet de nom `name` et de valeur `value` (0 par défaut) dans le graphe
         // Lève une ArgumentException s'il existe déjà un sommet avec le même nom dans le graphe
-        public void AddVertex(string name, float value = 0)
+        public void AddVertex(string name, float value = 0) // O(n)
         {
-            if (vertexIndices.ContainsKey(name)==true)
-            { 
-                throw new ArgumentException("Un sommet avec le même nom existe déja.", nameof(name)); 
+            if (vertexIndices.ContainsKey(name) == true) // O(1)
+            {
+                throw new ArgumentException("Un sommet avec le même nom existe déja.", nameof(name)); // O(1)
             }
-            int newIndex = order;
-            adjacence.AddRow(newIndex);
-            adjacence.AddColumn(newIndex);
-            vertexIndices[name] = newIndex;
-            vertexValues[name] = value;
-            order++;
+            int newIndex = order; // O(1)
+            adjacence.AddRow(newIndex); // O(n)
+            adjacence.AddColumn(newIndex); // O(n)
+            vertexIndices[name] = newIndex; // O(1)
+            vertexValues[name] = value; // O(1)
+            order++; // O(1)
         }
 
 
         // Supprime le sommet de nom `name` du graphe (et tous les arcs associés)
         // Lève une ArgumentException si le sommet n'a pas été trouvé dans le graphe
-        public void RemoveVertex(string name)
+        public void RemoveVertex(string name) // O(n)
         {
-            // TODO : implémenter
-            if (vertexIndices.TryGetValue(name, out int index)==false)
+            // TODO : implémenter // O(1)
+            if (vertexIndices.TryGetValue(name, out int index) == false) // O(1)
             {
-                throw new ArgumentException("Sommet non trouvé", nameof(name));
-            }   
-            adjacence.RemoveRow(index);  
-            adjacence.RemoveColumn(index); 
-            vertexIndices.Remove(name);
-            vertexValues.Remove(name);
-            order--;
+                throw new ArgumentException("Sommet non trouvé", nameof(name)); // O(1)
+            }
+            adjacence.RemoveRow(index);  // O(n)
+            adjacence.RemoveColumn(index); // O(n)
+            vertexIndices.Remove(name); // O(1)
+            vertexValues.Remove(name); // O(1)
+            order--; // O(1)
         }
 
         // Renvoie la valeur du sommet de nom `name`
@@ -127,34 +127,34 @@
         // Renvoie la liste des noms des voisins du sommet de nom `vertexName`
         // (si ce sommet n'a pas de voisins, la liste sera vide)
         // Lève une ArgumentException si le sommet n'a pas été trouvé dans le graphe
-        public List<string> GetNeighbors(string vertexName)
+        public List<string> GetNeighbors(string vertexName) // O(n^2)
         {
-            List<string> neighborNames = new List<string>();
+            List<string> neighborNames = new List<string>(); // O(1)
             int vertexIndex;
             try
             {
-                vertexIndex = vertexIndices[vertexName];
+                vertexIndex = vertexIndices[vertexName]; // O(1)
             }
             catch (KeyNotFoundException)
             {
-                throw new ArgumentException("Sommet non trouvé");
+                throw new ArgumentException("Sommet non trouvé"); // O(1)
             }
-            for (int j = 0; j < order; j++)
+            for (int j = 0; j < order; j++) // O(n)
             {
-                float weight = adjacence.GetValue(vertexIndex, j);
-                if (weight != noEdgeValue)
+                float weight = adjacence.GetValue(vertexIndex, j); // O(1)
+                if (weight != noEdgeValue) // O(1)
                 {
-                    foreach (var i in vertexIndices)
+                    foreach (var i in vertexIndices) // O(n)
                     {
-                        if (i.Value == j)
+                        if (i.Value == j) // O(1)
                         {
-                            neighborNames.Add(i.Key);
-                            break;
+                            neighborNames.Add(i.Key); // O(1)
+                            break; // O(1)
                         }
                     }
                 }
             }
-            return neighborNames;
+            return neighborNames; // O(1)
         }
 
         // --- Gestion des arcs ---
@@ -165,26 +165,26 @@
          * - un des sommets n'a pas été trouvé dans le graphe (source et/ou destination)
          * - il existe déjà un arc avec ces extrémités
          */
-        public void AddEdge(string sourceName, string destinationName, float weight = 1)
+        public void AddEdge(string sourceName, string destinationName, float weight = 1) // O(1)
         {
-            try
+            try // O(1)
             {
-                int i = vertexIndices[sourceName];
-                int j = vertexIndices[destinationName];
-                if(adjacence.GetValue(i, j)!=noEdgeValue)
+                int i = vertexIndices[sourceName]; // O(1)
+                int j = vertexIndices[destinationName]; // O(1)
+                if (adjacence.GetValue(i, j) != noEdgeValue) // O(1)
                 {
-                    throw new ArgumentException("Cet arc existe déja");
+                    throw new ArgumentException("Cet arc existe déja"); // O(1)
                 }
-                adjacence.SetValue(i, j, weight);
+                adjacence.SetValue(i, j, weight); // O(1)
 
-                if (!directed)
+                if (!directed) // O(1)
                 {
-                    adjacence.SetValue(j, i, weight);
+                    adjacence.SetValue(j, i, weight); // O(1)
                 }
             }
             catch (KeyNotFoundException)
             {
-                throw new ArgumentException("Sommet non trouvé");
+                throw new ArgumentException("Sommet non trouvé"); // O(1)
             }
         }
 
@@ -194,25 +194,25 @@
          * - un des sommets n'a pas été trouvé dans le graphe (source et/ou destination)
          * - l'arc n'existe pas
          */
-        public void RemoveEdge(string sourceName, string destinationName)
+        public void RemoveEdge(string sourceName, string destinationName) // O(1)
         {
-            try
+            try // O(1)
             {
-                int i = vertexIndices[sourceName];
-                int j = vertexIndices[destinationName];
-                if(adjacence.GetValue(i,j)==noEdgeValue)
+                int i = vertexIndices[sourceName]; // O(1)
+                int j = vertexIndices[destinationName]; // O(1)
+                if (adjacence.GetValue(i, j) == noEdgeValue) // O(1)
                 {
-                    throw new ArgumentException("l'arc n'existe pas");
+                    throw new ArgumentException("l'arc n'existe pas"); // O(1)
                 }
-                adjacence.SetValue(i, j, noEdgeValue);
-                if(!directed)
+                adjacence.SetValue(i, j, noEdgeValue); // O(1)
+                if (!directed) // O(1)
                 {
-                    adjacence.SetValue(j,i, noEdgeValue);
+                    adjacence.SetValue(j, i, noEdgeValue); // O(1)
                 }
             }
-            catch (KeyNotFoundException) 
+            catch (KeyNotFoundException)
             {
-                throw new ArgumentException("Sommet non trouvé");
+                throw new ArgumentException("Sommet non trouvé"); // O(1)
             }
         }
 
@@ -222,43 +222,47 @@
          * - un des sommets n'a pas été trouvé dans le graphe (source et/ou destination)
          * - l'arc n'existe pas
          */
-        public float GetEdgeWeight(string sourceName, string destinationName)
+        public float GetEdgeWeight(string sourceName, string destinationName) // O(1)
         {
-            if (this.vertexIndices.TryGetValue(sourceName, out int sourceIndex)==false)
+            if (this.vertexIndices.TryGetValue(sourceName, out int sourceIndex) == false) // O(1)
             {
-                throw new ArgumentException("Le sommet source n'existe pas.", nameof(sourceName));
+                throw new ArgumentException("Le sommet source n'existe pas.", nameof(sourceName)); // O(1)
             }
-            if (this.vertexIndices.TryGetValue(destinationName, out int destIndex)==false)
+            if (this.vertexIndices.TryGetValue(destinationName, out int destIndex) == false) // O(1)
             {
-                throw new ArgumentException("Le sommet destination n'existe pas.", nameof(destinationName));
+                throw new ArgumentException("Le sommet destination n'existe pas.", nameof(destinationName)); // O(1)
             }
-            float weight = this.adjacence.GetValue(sourceIndex, destIndex);
-            if (weight == this.noEdgeValue)
+            float weight = this.adjacence.GetValue(sourceIndex, destIndex); // O(1)
+            if (weight == this.noEdgeValue) // O(1)
             {
-                throw new ArgumentException("L'arc n'existe pas entre ces deux sommets.");
+                throw new ArgumentException("L'arc n'existe pas entre ces deux sommets."); // O(1)
             }
-            return weight;
+            return weight; // O(1)
         }
 
         /* Affecte le poids l'arc allant du sommet nommé `sourceName` au sommet nommé `destinationName` à `weight` 
          * Si le graphe n'est pas orienté, affecte le même poids à l'arc inverse
          * Lève une ArgumentException si un des sommets n'a pas été trouvé dans le graphe (source et/ou destination)
          */
-        public void SetEdgeWeight(string sourceName, string destinationName, float weight)
+        public void SetEdgeWeight(string sourceName, string destinationName, float weight) // O(1)
         {
-            if (this.vertexIndices.TryGetValue(sourceName, out int sourceIndex)==false)
+            if (this.vertexIndices.TryGetValue(sourceName, out int sourceIndex) == false) // O(1)
             {
-                throw new ArgumentException("Le sommet source n'existe pas.", nameof(sourceName));
+                throw new ArgumentException("Le sommet source n'existe pas.", nameof(sourceName)); // O(1)
             }
-            if (this.vertexIndices.TryGetValue(destinationName, out int destIndex)==false)
+            if (this.vertexIndices.TryGetValue(destinationName, out int destIndex) == false) // O(1)
             {
-                throw new ArgumentException("Le sommet destination n'existe pas.", nameof(destinationName));
+                throw new ArgumentException("Le sommet destination n'existe pas.", nameof(destinationName)); // O(1)
             }
-            this.adjacence.SetValue(sourceIndex, destIndex, weight);
-            if (this.directed==false)
+            this.adjacence.SetValue(sourceIndex, destIndex, weight); // O(1)
+            if (this.directed == false) // O(1)
             {
-                this.adjacence.SetValue(destIndex, sourceIndex, weight);
+                this.adjacence.SetValue(destIndex, sourceIndex, weight); // O(1)
             }
+        }
+        public bool ContainsVertex(string name)
+        {
+            return vertexIndices.ContainsKey(name);
         }
         // TODO : ajouter toutes les méthodes que vous jugerez pertinentes 
     }
