@@ -86,7 +86,7 @@ namespace TourneeFutee
                 cmdG.Parameters.AddWithValue("@oriente", g.Directed ? 1 : 0);
                 cmdG.Parameters.AddWithValue("@nom", "Graphe");
                 cmdG.Parameters.AddWithValue("@nb", g.Order);
-                uint grapheId = Convert.ToUInt32(cmdG.ExecuteScalar());
+                uint grapheId = Convert.ToUInt32(cmdG.ExecuteScalar()); // Récupérer l'id du graphe inséré pour l'associer aux sommets et arcs
 
                 //Insérer les sommets triés par indice matriciel
                 // On mémorise indice matriciel → id BdD pour l'insertion des arcs
@@ -102,7 +102,7 @@ namespace TourneeFutee
                     cmdS.Parameters.AddWithValue("@nom", nom);
                     cmdS.Parameters.AddWithValue("@val", valeur);
                     cmdS.Parameters.AddWithValue("@idx", indice);
-                    idBdDParIndice[indice] = Convert.ToUInt32(cmdS.ExecuteScalar());
+                    idBdDParIndice[indice] = Convert.ToUInt32(cmdS.ExecuteScalar()); // Récupérer l'id du sommet inséré pour l'associer à son indice dans la matrice
                 }
 
                 //Insérer les arcs
@@ -117,13 +117,13 @@ namespace TourneeFutee
                         // Un arc existe ssi son poids diffère de NoEdgeValue
                         if (poids != g.NoEdgeValue)
                         {
-                            string sqlArc = @"INSERT INTO Arc (graphe_id, sommet_source, sommet_dest, poids) VALUES (@gid, @src, @dst, @p);";
+                            string sqlArc = @"INSERT INTO Arc (graphe_id, sommet_source, sommet_dest, poids) VALUES (@gid, @src, @dst, @p);"; 
                             var cmdA = new MySqlCommand(sqlArc, conn);
                             cmdA.Parameters.AddWithValue("@gid", grapheId);
                             cmdA.Parameters.AddWithValue("@src", idBdDParIndice[i]);
                             cmdA.Parameters.AddWithValue("@dst", idBdDParIndice[j]);
                             cmdA.Parameters.AddWithValue("@p", poids);
-                            cmdA.ExecuteNonQuery();
+                            cmdA.ExecuteNonQuery();  
                         }
                     }
                 }
@@ -176,7 +176,7 @@ namespace TourneeFutee
                         int idx = r.GetInt32("indice");
                         uint sid = r.GetUInt32("id");
                         string nm = r.GetString("nom");
-                        float val = r.IsDBNull(r.GetOrdinal("valeur")) ? 0f : r.GetFloat("valeur");
+                        float val = r.IsDBNull(r.GetOrdinal("valeur")) ? 0f : r.GetFloat("valeur"); // Traiter le cas où la valeur est null en base (si la colonne autorise null)
                         nomParIndice[idx] = nm;
                         valeurParIndice[idx] = val;
                         nomParIdBdD[sid] = nm;
@@ -201,7 +201,7 @@ namespace TourneeFutee
                         string src = nomParIdBdD[r.GetUInt32("sommet_source")];
                         string dst = nomParIdBdD[r.GetUInt32("sommet_dest")];
                         float poids = r.GetFloat("poids");
-                        g.AddEdge(src, dst, poids);
+                        g.AddEdge(src, dst, poids); // La méthode AddEdge gère à la fois les graphes orientés et non orientés
                     }
                 }
                 return g;
@@ -233,7 +233,7 @@ namespace TourneeFutee
                 {
                     while (r.Read())
                     {
-                        nomVersId[r.GetString("nom")] = r.GetUInt32("id");
+                        nomVersId[r.GetString("nom")] = r.GetUInt32("id"); // Mémoriser la correspondance nom sommet 
                     }
                 }
                 for (int i = 0; i < t.Vertices.Count; i++)
@@ -242,7 +242,7 @@ namespace TourneeFutee
                     var cmdE = new MySqlCommand(sqlEtape, conn);
                     cmdE.Parameters.AddWithValue("@tid", tourId);
                     cmdE.Parameters.AddWithValue("@ordre", i);
-                    cmdE.Parameters.AddWithValue("@sid", nomVersId[t.Vertices[i]]);
+                    cmdE.Parameters.AddWithValue("@sid", nomVersId[t.Vertices[i]]); // Associer le sommet de l'étape à son id en base de données
                     cmdE.ExecuteNonQuery();
                 }
                 return tourId;
@@ -281,7 +281,7 @@ namespace TourneeFutee
                 {
                     while (r.Read())
                     {
-                        idVersNom[r.GetUInt32("id")] = r.GetString("nom");
+                        idVersNom[r.GetUInt32("id")] = r.GetString("nom"); // Mémoriser la correspondance id sommet 
                     }
                 }
                 List<string> sequence = new List<string>();
@@ -296,7 +296,7 @@ namespace TourneeFutee
                         sequence.Add(idVersNom[sommetId]);
                     }
                 }
-                return new Tour(sequence, coutTotal);
+                return new Tour(sequence, coutTotal); // Utilise un constructeur de Tour qui prend la séquence de sommets et le coût total 
             }
         }
 
