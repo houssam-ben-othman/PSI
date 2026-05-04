@@ -78,16 +78,16 @@
          */
         public void AddRow(int i)
         {
-            if (i < 0 || i > nbRows)
+            if (i < 0 || i > nbRows) 
             {
-                throw new ArgumentOutOfRangeException(nameof(i), "Indice hors limites");
+                throw new ArgumentOutOfRangeException(nameof(i), "Indice hors limites"); // verifie que i est dans les limites
             }
             List<float> Defaut = new List<float>();
             for (int x = 0; x < this.nbColumns; x++) 
             {
                 Defaut.Add(defaultValue);
             }
-            matrice.Insert(i, Defaut);
+            matrice.Insert(i, Defaut); // insère la nouvelle ligne à l'indice i
             nbRows++;
             }
 
@@ -115,11 +115,11 @@
         {
             if (i < 0||i>=this.nbRows) 
             {
-                throw new ArgumentOutOfRangeException(nameof(i), "Indice hors limites"); 
+                throw new ArgumentOutOfRangeException(nameof(i), "Indice hors limites"); // verifie que i est dans les limites
             }
             else 
             {
-                this.matrice.RemoveAt(i); 
+                this.matrice.RemoveAt(i);  // supprime la ligne à l'indice i
                 this.nbRows--; 
             }
         }
@@ -130,13 +130,13 @@
         {
             if (j < 0||j>=this.nbColumns) 
             {
-                throw new ArgumentOutOfRangeException(nameof(j), "Indice hors limites"); 
+                throw new ArgumentOutOfRangeException(nameof(j), "Indice hors limites");  // verifie que j est dans les limites
             }
             else 
             {
                 for (int i = 0; i < this.nbRows; i++)  
                 {
-                    this.matrice[i].RemoveAt(j); 
+                    this.matrice[i].RemoveAt(j);  // supprime la colonne à l'indice j pour chaque ligne
                 }
                 this.nbColumns--; 
             }
@@ -148,11 +148,11 @@
         {
             if (i < 0 || i >= this.nbRows)
             {
-                throw new ArgumentOutOfRangeException(nameof(i));
+                throw new ArgumentOutOfRangeException(nameof(i)); // verifie que i est dans les limites
             }
             else if (j < 0 || j >= this.nbColumns)
             {
-                throw new ArgumentOutOfRangeException(nameof(j));
+                throw new ArgumentOutOfRangeException(nameof(j)); // verifie que j est dans les limites
             }
             else
             {
